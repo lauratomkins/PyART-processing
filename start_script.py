@@ -68,8 +68,14 @@ from multiprocessing import Process
 
 ######### Define Variables #############
 ### Path Variables
+
 inpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\data\\KASPR\\'+sys.argv[1]+'\\'+sys.argv[2]
 outpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\images\\KASPR\\'+sys.argv[1]+'\\'+sys.argv[2]
+
+#inpath = 'H:\\store radar files\\KASPR\\20200119\\'
+#outpath = 'H:\\radar output\\KASPR\\20200119\\'
+
+
 ### File and Data Variables ###
 wildcard = 'KASPR' #Common wildcards are below
 #CHL: CSU-CHILL S-band
@@ -113,6 +119,9 @@ if radar_type=='CHILL':
 elif radar_type=='KASPR':
     fields = ['correlation_coefficient','differential_reflectivity','PyART_dealiased_velocity','reflectivity','spectrum_width','linear_depolarization_ratio','snr','kdp','differential_phase']
     ranges = [(0.5,1),(-2,2),(-45,45),(-5,40),(0,3),(-40,-20),(20,100),(-3,3),(-180,180)] #KASPR (commonly-used) (winter)
+    #fields = ['correlation_coefficient','differential_reflectivity','PyART_dealiased_velocity','reflectivity','spectrum_width','linear_depolarization_ratio','snr']
+    #ranges = [(0.5,1),(-2,2),(-45,45),(-20,30),(0,3),(-40,-20),(0,100)] #KASPR (commonly-used) (winter)
+
 elif radar_type=='NEXRAD':
     fields = ['reflectivity','dealiased_velocity','spectrum_width','cross_correlation_ratio','differential_reflectivity']
     ranges = [(-5,50),(-50,50),(0,12),(0,1),(-4,4)]
@@ -137,11 +146,15 @@ if scan_strat != 'RHI':
         x_lim = [-40,40]
         y_lim = [-40,40]
 if scan_strat == 'RHI':
+
     x_lim = [0,60]
     y_lim = [0,9]
     if radar_type == 'KASPR':
-        x_lim = [-40,40]
+        #x_lim = [-40,40]
+        #y_lim = [0,12]
+        x_lim = [-30,30]
         y_lim = [0,12]
+
 
 # Other useful x-limits
 #x_lim = [-375,375] #HF-S PPI
@@ -259,7 +272,7 @@ NCP_mask = {
         }
 SNR_mask = {
         "bool": True,
-        "range": (20, 100)
+        "range": (0, 100) #(0,100) to remove only NaNs
         }
 
 #   Account for Zdr offset on radars such as KASPR or HF-S
