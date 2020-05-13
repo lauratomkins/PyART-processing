@@ -68,13 +68,13 @@ import sys
 
 ######### Define Variables #############
 ### Path Variables
-inpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\data\\KASPR\\'+sys.argv[1]+'\\'+sys.argv[2]
-outpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\images\\KASPR\\'+sys.argv[1]+'\\'+sys.argv[2]
+inpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\data\\NEXRAD\\'+sys.argv[1]+'\\'+sys.argv[2]
+outpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\images\\NEXRAD\\'+sys.argv[1]+'\\'+sys.argv[2]
 #inpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\data\\KASPR\\20191201\\ppi'
 #outpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\images\\KASPR\\20191201\\ppi'
 
 ### File and Data Variables ###
-wildcard = 'KASPR' #Common wildcards are below
+wildcard = sys.argv[1] #Common wildcards are below
 #CHL: CSU-CHILL S-band
 #CHX: CSU-CHILL X-band
 #KASPR: SBU Ka-band
@@ -83,7 +83,7 @@ wildcard = 'KASPR' #Common wildcards are below
 #KXA: Dallas HF-S
 #KXAS: NBC5 StormRanger
 
-scan_strat = sys.argv[2] #Possible entries are below
+scan_strat = 'PPI' #Possible entries are below
 #PPI: Plan view at a specific tilt angle
 #RHI: Cross section along a specific azimuth
 #Sector: Plan view at a specific tilt angle, with a confined set of azimuths. ONLY PARTIALLY IMPLEMENTED
@@ -162,7 +162,7 @@ elif radar_type=='NEXRAD':
 
 ### Dealiasing Variables ###
 dealias_bool = True
-save_cfradial_bool = False #Save the radar data with dealiased velocity in a CF/Radial file
+save_cfradial_bool = True #Save the radar data with dealiased velocity in a CF/Radial file
 
 if radar_type=='CHILL':
     name2dealias = 'corrected_velocity' #CSU-CHILL

@@ -56,18 +56,23 @@ def dealias(radar, filename, outpath, name2dealias, new_name, nyquist_vel,
     """
     
     # Determine which sweeps have no data and extract only the ones that have data 
-    if nyquist_vel != None:
-        good = []
-        print("Dealiasing in progress!")
-        for i in range(radar.nsweeps):
-            sweep = radar.get_slice(i)
-            if radar.fields[name2dealias]['data'][sweep][0,:].flatten().count() != 0:
-                good.append(i)
-        radar = radar.extract_sweeps(good)
+    if radar.metadata['original_container'] != 'NEXRAD Level II':
+        if nyquist_vel != None:
+            good = []
+            print("Dealiasing in progress!")
+            for i in range(radar.nsweeps):
+                sweep = radar.get_slice(i)
+                if radar.fields[name2dealias]['data'][sweep][0,:].flatten().count() != 0:
+                    good.append(i)
+            radar = radar.extract_sweeps(good) # For NEXRAD data there are some sweeps which have velocity but not rhohv and vice versa. Need to plot all sweeps
     
-    # Dealias and add new dealiased field to radar object    
-    corr_vel = pyart.correct.dealias_region_based(radar,vel_field=name2dealias,nyquist_vel=nyquist_vel,skip_along_ray=skip_along_ray,skip_between_rays=skip_between_rays,gatefilter=False,keep_original=False)
-    radar.add_field(new_name, corr_vel, True)
+    # Dealias and add new dealiased field to radar object 
+    if radar.metadata['original_container'] == 'NEXRAD Level II': # NEXRAD has different nyquist velocity for all sweeps. Don't specify velocity and function will automatically detect
+        corr_vel = pyart.correct.dealias_region_based(radar,vel_field=name2dealias,skip_along_ray=skip_along_ray,skip_between_rays=skip_between_rays,gatefilter=False,keep_original=False)
+        radar.add_field(new_name, corr_vel, True)
+    else:
+        corr_vel = pyart.correct.dealias_region_based(radar,vel_field=name2dealias,nyquist_vel=nyquist_vel,skip_along_ray=skip_along_ray,skip_between_rays=skip_between_rays,gatefilter=False,keep_original=False)
+        radar.add_field(new_name, corr_vel, True)
     print("Dealiasing complete in current file!")
        
     # Save a new file containing the dealiased field
