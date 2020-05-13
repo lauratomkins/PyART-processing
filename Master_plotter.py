@@ -18,12 +18,14 @@ import numpy as np
 import gc
 import pyart
 from matplotlib import pyplot as plt
+from matplotlib import font_manager as ff
 import gen_fun
 import quality_control
 import math
 import scipy.ndimage as spyi
 import time
 import colormap
+
 
 
 def contour_overlay(radar, sweepnum, contourField, baseField, ax, total_text, contourValues, scan_strat):
@@ -138,9 +140,6 @@ def plot(radar, radar_type, filename, outpath, scan_strat, fields, ranges, cmaps
             
             vmin, vmax = ranges[i]                       
             
-            # Check to see if values are in range
-            #radar = quality_control.set2range(radar,field,vmax,vmin) #Not used in current processing workflow
-            
             # Instantiate PyART radar display object
             display = pyart.graph.RadarDisplay(radar)            
             
@@ -151,11 +150,6 @@ def plot(radar, radar_type, filename, outpath, scan_strat, fields, ranges, cmaps
             # Initiate plot and specify size
             fig = plt.figure(figsize = figsize)
             ax = fig.add_subplot(111)
-            
-            if scan_strat == 'RHI':
-                plt.subplots_adjust(left=0.05, right=.99, top=0.95, bottom=0.2)
-            else:
-                plt.subplots_adjust(left=0.1, right=.9, top=0.97, bottom=0.1)
             ax.set_facecolor('#CCCCCC') #Controls background color within the radar data display. Can be any Hex color code. Normal value: #CCCCCC (light gray)
                 
             try:
@@ -201,12 +195,10 @@ def plot(radar, radar_type, filename, outpath, scan_strat, fields, ranges, cmaps
                 else:
                     total_text = time_text+long_spacer+angle_text+long_spacer+scan_strat
                 
-                #caption_dict controls the text characteristics for all meta text on the figure
-                #   UNCW teal: '#105456'
-                caption_dict = {'fontname':'Open Sans',
-                                'color': '#105456',
-                                'size': 24,
-                                'weight': 'bold'}
+                #caption_dict controls characteristics for all meta text in the title
+                # Currently, only size is set here, but this dictionary can be used 
+                # for font name, color, weight, etc.
+                caption_dict = {'size': 26}
                 
                 metadisp = True #Logical to display metatext in figure
                     
@@ -223,8 +215,11 @@ def plot(radar, radar_type, filename, outpath, scan_strat, fields, ranges, cmaps
                     display.set_aspect_ratio(aspect_ratio=1) #important!!
                     plt.yticks(np.arange(0,y_lim[1]+1,step=1))
                     if metadisp:
-                        labeled = 'labeled_'                        
-                        plt.figtext(0.38,0.915,total_text,caption_dict) #Title the figure with the metatext
+                        labeled = 'labeled_' 
+                        plt.tight_layout(rect=[0,0.09,1,0.95])
+                        plt.figtext(0.35,0.95,total_text,caption_dict) #Title the figure with the metatext
+                    else:
+                        plt.tight_layout(rect=[0,0.09,1,0.95])                   
                         
                 else:
                         display.plot_ppi(field, sweepnum, vmin = vmin, vmax = vmax, title_flag = title_flag, cmap = cmap, axislabels = (axis, "N-S distance (km)"),colorbar_flag=True, colorbar_label = colorbar_label)
@@ -283,7 +278,8 @@ def plot(radar, radar_type, filename, outpath, scan_strat, fields, ranges, cmaps
                             if radar_type=='NEXRAD' and contour_bool==True:
                                 plt.figtext(0.1,0.905,total_text,caption_dict) #Title the figure with the metatext
                             else:
-                                plt.figtext(0.17,0.905,total_text,caption_dict) #Title the figure with the metatext
+                                plt.figtext(0.17,0.88,total_text,caption_dict) #Title the figure with the metatext
+                        plt.tight_layout(rect=[0.05,0,0.95,1])
                             
             except ValueError:
                 print("Error in sweep!") #Prevents the plotter from failing silently on a large number of files
@@ -291,7 +287,7 @@ def plot(radar, radar_type, filename, outpath, scan_strat, fields, ranges, cmaps
             
             #Control figure text: axis labels, axis tick labels, colorbar tick labels, and colorbar label
             for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] + ax.get_xticklabels() + ax.get_yticklabels() + fig.axes[1].get_yticklabels() + [fig.axes[1].yaxis.label]):
-                item.set_fontsize(30)
+                item.set_fontsize(24)
             #No colorbar version
 #            for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] + ax.get_xticklabels() + ax.get_yticklabels()):
 #                item.set_fontsize(26)
@@ -322,9 +318,8 @@ def plot(radar, radar_type, filename, outpath, scan_strat, fields, ranges, cmaps
                         save_name = "%s%s.%s.contour%s.%d.%s.png" %(outpath, filename, field, contour_field, sweepnum, a_save)
                     else:
                         save_name = "%s%s.%s.%d.%s.png" %(outpath, filename, field, sweepnum, a_save)
-    
+               
             plt.close('all')
-            fig.tight_layout()
             fig.savefig(save_name)
             del display
             gc.collect()

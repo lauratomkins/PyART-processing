@@ -133,7 +133,7 @@ def parse_filelist(filelist, inpath, outpath, radar_type, fields, ranges, plot_b
         if scan_strat == 'RHI':
             #for 0 to 6 km use [40,6]
             #for 0 to 9 km use [42,8]
-            figsize = [42,8]#[40,6] #some others that have been useful [40,12]#[14.66, 3.652]#[40, 12]#[49.82, 4]#[43.6, 3.5]#30,4 #25,4
+            figsize = [38,8]#[40,6] #some others that have been useful [40,12]#[14.66, 3.652]#[40, 12]#[49.82, 4]#[43.6, 3.5]#30,4 #25,4
         else:
             figsize = [16,16] #Same settings used for PPI and sector scans # [16.346, 12]
         

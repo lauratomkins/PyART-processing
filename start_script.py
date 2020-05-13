@@ -68,8 +68,10 @@ from multiprocessing import Process
 
 ######### Define Variables #############
 ### Path Variables
+
 inpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\data\\KASPR\\'+sys.argv[1]+'\\'+sys.argv[2]
 outpath = 'C:\\Users\\lmtomkin\\Documents\\winter_storms\\images\\KASPR\\'+sys.argv[1]+'\\'+sys.argv[2]
+
 ### File and Data Variables ###
 wildcard = 'KASPR' #Common wildcards are below
 #CHL: CSU-CHILL S-band
@@ -140,8 +142,9 @@ if scan_strat == 'RHI':
     x_lim = [0,60]
     y_lim = [0,9]
     if radar_type == 'KASPR':
-        x_lim = [-40,40]
+        x_lim = [-30,30]
         y_lim = [0,12]
+
 
 # Other useful x-limits
 #x_lim = [-375,375] #HF-S PPI
@@ -259,7 +262,7 @@ NCP_mask = {
         }
 SNR_mask = {
         "bool": True,
-        "range": (20, 100)
+        "range": (0, 100) #(0,100) to remove only NaNs
         }
 
 #   Account for Zdr offset on radars such as KASPR or HF-S
